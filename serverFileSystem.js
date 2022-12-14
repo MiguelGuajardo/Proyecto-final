@@ -7,14 +7,14 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
 //imports dao FileSystem
-const ProductsDaoFiles = require('./src/daos/products/prodDaoFS');
-const CartDaoFiles = require('./src/daos/cart/cartDaoFS');
+const ProductController = require('./src/controller/productControllerFileSystem');
+const CartController = require('./src/controller/cartControllerFileSystem');
 //routers de FileSystem
-const prodControllerFS = new ProductsDaoFiles()
-const cartControllerFS = new CartDaoFiles()
+const productFileSystem = new ProductController()
+const cartFileSystem = new CartController()
 
-app.use('/api/productos', prodControllerFS.getRouter());
-app.use('/api/carrito', cartControllerFS.getRouter());
+app.use('/api/productos', productFileSystem.getRouter());
+app.use('/api/carrito', cartFileSystem.getRouter());
 
 app.listen(PORT, ()=>{
     console.log(`Escuchando en puerto ${PORT}`)

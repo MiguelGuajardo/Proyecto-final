@@ -1,53 +1,45 @@
-const { Router } = require('express');
-const ContainerFiles = require('../../containers/containerFileSystem');
+const express = require("express")
+const ProductsDaoFileSystem = require("../daos/products/prodDaoFileSystem")
 
-class ProductsDaoFiles extends ContainerFiles{
+class ProductController{
     constructor(){
-        super('products.json')
-        this.productsRouter = Router()
+        this.router = express.Router()
+        this.productDaoFileSystem = new ProductsDaoFileSystem()
 
-        this.productsRouter.get('/', async (req, res) => {
-            super.getAll()
+        this.router.get("/",(req,res)=>{
+            this.productDaoFileSystem.getAll()
             .then((products) => res.json(products))
             .catch((err) => res.send({error: `hubo un error al traer los productos ${err}`}))
-            
-        });
-
-        this.productsRouter.get('/:id', async (req, res) => {
+        })
+        this.router.get("/:id",(req,res)=>{
             let id = parseInt(req.params.id);
-            super.getByID(id)
+            this.productDaoFileSystem.getByID(id)
             .then((product) => res.json(product))
             .catch((err) => res.send({error : `Producto no encontrado ${err}`}))
-        });
-
-        this.productsRouter.post('/', async (req, res) => {
+        })
+        this.router.post("/",(req,res)=>{
             const product = req.body;
-            super.save(product)
-            .then(() => super.getAll())
+            this.productDaoFileSystem.save(product)
+            .then(() => this.productDaoFileSystem.getAll())
             .then((prods) => res.json(prods))
             .catch((err) => res.send({error : `No se pudo guardar el producto ${err}`}))
-        });
-
-        this.productsRouter.put('/:id', async (req, res) => {
+        })
+        this.router.put("/:id",(req,res)=>{
             let id = parseInt(req.params.id)
             let product = req.body
-            super.update(id,product)
+            this.productDaoFileSystem.update(id,product)
             .then((result) => res.json(result))
             .catch((err) => res.send({error: `error al actualizar producto ${err}`}))
-        });
-
-        this.productsRouter.delete("/:id", async (req, res) => {
+        })
+        this.router.delete("/:id",(req,res)=>{
             let id = parseInt(req.params.id)
-            super.deleteByID(id)
+            this.productDaoFileSystem.deleteByID(id)
             .then((result) => res.json(result))
             .catch((err) => res.send({error: `error al eliminar producto ${err}`}))
-        });
+        })
     }
-
     getRouter = () => {
-        return this.productsRouter
+        return this.router
     }
-
 }
-module.exports = ProductsDaoFiles; 
-
+module.exports = ProductController

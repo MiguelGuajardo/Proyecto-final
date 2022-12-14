@@ -37,7 +37,7 @@ class ContainerFiles {
                     newFile = {
                         id: lastId + 1,
                         date: new Date().toLocaleString(),
-                        products: [product]
+                        products: []
                     }
                 }
                 allFiles.push(newFile)
@@ -55,7 +55,7 @@ class ContainerFiles {
                     newFile = {
                         id: 1,
                         date: new Date().toLocaleString(),
-                        products: [product]
+                        products: []
                     }
                 }
                 await fs.promises.writeFile(path+this.fileName, JSON.stringify([newFile, null, 2]))
@@ -81,7 +81,8 @@ class ContainerFiles {
             let allFiles = await this.getAll();
             let index = allFiles.findIndex((prod) => prod.id == id);
             if (index >= 0) {
-                allFiles[index] = product;
+                allFiles[index] = {id:id,date: new Date().toLocaleString(),...product};
+                
                 await fs.promises.writeFile(path+this.fileName, JSON.stringify(allFiles, null, 2));
                 return {status: "éxito", description: "el producto se modificó con éxito"}
             }
